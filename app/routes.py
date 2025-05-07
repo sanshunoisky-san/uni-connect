@@ -1,6 +1,8 @@
+import json
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import db, User
+from .models import db, User, Appointment, Therapist
 
 routes = Blueprint('routes', __name__)
 
@@ -50,3 +52,38 @@ def register():
 @login_required
 def index():
     return render_template("index.html")
+
+@routes.route("/appointments")
+@login_required
+def show_appointments():
+    if current_user.role != "student":
+        flash("Only students can book appointments.")
+        return redirect(url_for("routes.index"))
+    therapists = Therapist.query.all()
+    if not therapists:
+        return json.dumps("statusCode: 404")
+    return render_template("appointments.html", therapists=therapists)
+
+@routes.route("/book", methods=["POST"])
+@login_required
+def book_appointment():
+    if current_user.role != "student":
+        flash("Only students can book appointments.")
+        return redirect(url_for("routes.index"))
+    therapist_id = int(request.form["therapist"])
+    slot = request.form["slot"]
+    existing = Appointment.query.filter_by(
+        therapist_id=therapist_id,
+        slot=slot
+    ).filter(Appointment.status != "cancelled").first()
+    if existing:
+        return json.dumps("statusCode:403")
+    appointment = Appointment(
+        therapist_id=therapist_id,
+        user_id=current_user.id,
+        slot=slot,
+        status="pending"
+    )
+    db.session.add(appointment)
+    db.session.commit()
+    return json.dumps("statusCode: 200")

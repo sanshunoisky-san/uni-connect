@@ -10,6 +10,13 @@
     </div>
     <div class="container">
         <h1>Welcome to UniSupport</h1>
+        <nav>
+            <ul>
+                {% if current_user.role == "student" %}
+                    <li><a href="/appointments">Book Appointment</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 </body>
 </html>
