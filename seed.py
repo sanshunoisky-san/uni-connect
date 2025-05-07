@@ -1,4 +1,4 @@
-from app.models import db, User, Therapist
+from app.models import db, User, Therapist, ForumPost
 from run import app
 
 if __name__ == '__main__':
@@ -22,6 +22,16 @@ if __name__ == '__main__':
         student_user = User(username="student1", role="student")
         student_user.set_password("student123")
         db.session.add(student_user)
+
+        post1 = ForumPost(
+            title="Welcome to the Welfare Forum",
+            content="We're excited to introduce weekly mental wellness sessions!"
+        )
+        post2 = ForumPost(
+            title="Resource Center Live!",
+            content="Access protocols and guides are now available in the resource center."
+        )
+        db.session.add_all([post1, post2])
 
         db.session.commit()
         print("Seed data inserted:")
