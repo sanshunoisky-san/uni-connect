@@ -6,3 +6,5 @@ conda install -y -c conda-forge --file requirements.txt
 - conda install flask
 - conda install -c conda-forge flask-sqlalchemy
 - conda install -c conda-forge flask-login
+
+run seed.py to populate the db and start the project by running the run.py file
