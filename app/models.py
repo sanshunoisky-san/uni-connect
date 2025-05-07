@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -15,3 +16,22 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+class Therapist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    slots = db.Column(db.PickleType, nullable=False)
+
+    def _repr_(self):
+        return f"<Therapist {self.name}>"
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    therapist_id = db.Column(db.Integer, db.ForeignKey('therapist.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    slot = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), default='pending')
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    therapist = db.relationship('Therapist', backref='appointments')
+    user = db.relationship('User', backref='appointments')

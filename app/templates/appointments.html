@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="margin-top: 20px;">
+        <a href="/" style="text-decoration:none; color:#2980b9; font-weight:bold;">← Back to Home</a>
+    </div>
+    <div style="text-align:right; margin: 10px;">
+        <a href="{{ url_for('routes.logout') }}" style="text-decoration:none; color:#e74c3c; font-weight:bold;">Logout</a>
+    </div>
+    <div class="container">
+        <h1>Therapist Availability</h1>
+        <ul class="comment-list">
+            {% for therapist in therapists %}
+                <li>
+                    <strong>{{ therapist.name }}</strong> - Slots:
+                    <ul class="comment-list">
+                        {% for slot in therapist.slots %}
+                            <li>
+                                {{ slot }}
+                                <form action="/book" method="post" style="display:inline;">
+                                    <input type="hidden" name="therapist" value="{{ therapist.id }}">
+                                    <input type="hidden" name="slot" value="{{ slot }}">
+                                    <button type="submit">Book</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
