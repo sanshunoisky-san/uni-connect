@@ -22,7 +22,21 @@
                 <ul class="comment-list">
                     {% for comment in post.comments %}
                         <li>
-                            {{ comment.text }}
+                            {% if comment.id|string == request.args.get('edit') %}
+                                <form class="comment-edit-form" action="{{ url_for('routes.update_comment', comment_id=comment.id) }}" method="post">
+                                    <input type="text" name="new_text" value="{{ comment.text }}" required>
+                                    <button type="submit">Save</button>
+                                    <a href="{{ url_for('routes.forum') }}">Cancel</a>
+                                </form>
+                            {% else %}
+                                {{ comment.text }}
+                                {% if comment.user_id == current_user.id %}
+                                    <span class="comment-actions">
+                                        <a href="{{ url_for('routes.forum', edit=comment.id) }}">Edit</a> |
+                                        <a href="{{ url_for('routes.delete_comment', comment_id=comment.id) }}" onclick="return confirm('Delete this comment?')">Delete</a>
+                                    </span>
+                                {% endif %}
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
