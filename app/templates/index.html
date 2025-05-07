@@ -15,6 +15,7 @@
                 {% if current_user.role == "student" %}
                     <li><a href="/appointments">Book Appointment</a></li>
                     <li><a href="/my-appointments">My Appointments</a></li>
+                    <li><a href="/feedback">Submit Feedback</a></li>
                     <li><a href="/forum">Discussion Forum</a></li>
                 {% elif current_user.role == "therapist" %}
                     <li><a href="/appointments/manage">Manage Appointments</a></li>

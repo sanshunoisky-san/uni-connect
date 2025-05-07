@@ -52,3 +52,9 @@ class Comment(db.Model):
 
     post = db.relationship('ForumPost', backref='comments')
     user = db.relationship('User', backref='comments')
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), default='Anonymous')
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

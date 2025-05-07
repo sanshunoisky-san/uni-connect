@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import db, User, Appointment, Therapist, ForumPost, Comment
+from .models import db, User, Appointment, Therapist, ForumPost, Comment, Feedback
 from .utils import Observer
 
 routes = Blueprint('routes', __name__)
@@ -145,3 +145,15 @@ def comment(post_id):
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for("routes.forum"))
+
+@routes.route("/feedback", methods=["GET", "POST"])
+@login_required
+def feedback():
+    if request.method == "POST":
+        name = request.form["name"]
+        message = request.form["message"]
+        feedback = Feedback(name=name or "Anonymous", message=message)
+        db.session.add(feedback)
+        db.session.commit()
+        return render_template("status.html", message="Feedback submitted successfully.")
+    return render_template("feedback.html")
