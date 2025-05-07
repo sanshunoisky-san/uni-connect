@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="margin-top: 20px;">
+        <a href="/" style="text-decoration:none; color:#2980b9; font-weight:bold;">← Back to Home</a>
+    </div>
+    <div style="text-align:right; margin: 10px;">
+        <a href="{{ url_for('routes.logout') }}" style="text-decoration:none; color:#e74c3c; font-weight:bold;">Logout</a>
+    </div>
+    <div class="container">
+        <h1>{{ message }}</h1>
+        <a href="{{ url_for('routes.index') }}">← Back to Home</a>
+    </div>
+</body>
+</html>
