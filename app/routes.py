@@ -1,11 +1,10 @@
-import json
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import db, User, Appointment, Therapist
+from .utils import Observer
 
 routes = Blueprint('routes', __name__)
-
+notifier = Observer()
 
 @routes.route("/login", methods=["GET", "POST"])
 def login():
@@ -41,6 +40,9 @@ def register():
             return redirect(url_for("routes.register"))
         user = User(username=username, role=role)
         user.set_password(password)
+        if role == "therapist":
+            therapist1 = Therapist(name=username, slots=["10:00", "11:00", "15:00"])
+            db.session.add(therapist1)
         db.session.add(user)
         db.session.commit()
 
@@ -61,7 +63,7 @@ def show_appointments():
         return redirect(url_for("routes.index"))
     therapists = Therapist.query.all()
     if not therapists:
-        return json.dumps("statusCode: 404")
+        return render_template("status.html", message="No therapists are available at the moment.")
     return render_template("appointments.html", therapists=therapists)
 
 @routes.route("/book", methods=["POST"])
@@ -77,7 +79,7 @@ def book_appointment():
         slot=slot
     ).filter(Appointment.status != "cancelled").first()
     if existing:
-        return json.dumps("statusCode:403")
+        return render_template("status.html", message="This slot is already booked.")
     appointment = Appointment(
         therapist_id=therapist_id,
         user_id=current_user.id,
@@ -86,4 +88,45 @@ def book_appointment():
     )
     db.session.add(appointment)
     db.session.commit()
-    return json.dumps("statusCode: 200")
+    notifier.notify(appointment)
+    return render_template("status.html", message="Appointment requested and pending approval.")
+
+@routes.route("/appointments/update/<int:appointment_id>/<action>")
+@login_required
+def update_appointment_status(appointment_id, action):
+    if current_user.role != "therapist":
+        flash("Unauthorized.")
+        return redirect(url_for("routes.index"))
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if action == "accept":
+        appointment.status = "booked"
+    elif action == "reject":
+        appointment.status = "cancelled"
+    else:
+        flash("Invalid action.")
+        return redirect(url_for("routes.manage_appointments"))
+    db.session.commit()
+    notifier.notify(appointment)
+    return redirect(url_for("routes.manage_appointments"))
+
+@routes.route("/appointments/manage")
+@login_required
+def manage_appointments():
+    if current_user.role != "therapist":
+        flash("Only therapists can manage appointments.")
+        return redirect(url_for("routes.index"))
+    therapist = Therapist.query.filter_by(name=current_user.username).first()
+    if not therapist:
+        flash("No profile found.")
+        return redirect(url_for("routes.index"))
+    appointments = Appointment.query.filter_by(therapist_id=therapist.id).all()
+    return render_template("manage_appointments.html", appointments=appointments)
+
+@routes.route("/my-appointments")
+@login_required
+def my_appointments():
+    if current_user.role != "student":
+        flash("Only students can view their appointments.")
+        return redirect(url_for("routes.index"))
+    appointments = Appointment.query.filter_by(user_id=current_user.id).all()
+    return render_template("my_appointments.html", appointments=appointments)

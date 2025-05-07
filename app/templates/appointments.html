@@ -13,11 +13,11 @@
     </div>
     <div class="container">
         <h1>Therapist Availability</h1>
-        <ul class="comment-list">
+        <ul class="apt-list">
             {% for therapist in therapists %}
                 <li>
                     <strong>{{ therapist.name }}</strong> - Slots:
-                    <ul class="comment-list">
+                    <ul class="apt-list">
                         {% for slot in therapist.slots %}
                             <li>
                                 {{ slot }}

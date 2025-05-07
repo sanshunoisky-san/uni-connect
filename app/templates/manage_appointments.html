@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Appointments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="margin-top: 20px;">
+        <a href="/" style="text-decoration:none; color:#2980b9; font-weight:bold;">← Back to Home</a>
+    </div>
+    <div style="text-align:right; margin: 10px;">
+        <a href="{{ url_for('routes.logout') }}" style="text-decoration:none; color:#e74c3c; font-weight:bold;">Logout</a>
+    </div>
+
+    <div class="container">
+        <h1>Appointment Requests</h1>
+
+        {% if appointments %}
+            <ul class="apt-list">
+                {% for a in appointments %}
+                    <li>
+                        <strong>Student ID:</strong> {{ a.user_id }}<br>
+                        <strong>Slot:</strong> {{ a.slot }}<br>
+                        <strong>Status:</strong> {{ a.status }}<br>
+
+                        {% if a.status == 'pending' %}
+                            <a href="/appointments/update/{{ a.id }}/accept">Accept</a> |
+                            <a href="/appointments/update/{{ a.id }}/reject">Reject</a>
+                        {% elif a.status == 'booked' %}
+                            Accepted
+                        {% elif a.status == 'cancelled' %}
+                            Rejected
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No appointments to manage.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
