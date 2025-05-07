@@ -146,6 +146,31 @@ def comment(post_id):
     db.session.commit()
     return redirect(url_for("routes.forum"))
 
+@routes.route("/comment/update/<int:comment_id>", methods=["POST"])
+@login_required
+def update_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.user_id != current_user.id:
+        flash("You can only edit your own comments.")
+        return redirect(url_for("routes.forum"))
+    new_text = request.form["new_text"]
+    comment.text = new_text
+    db.session.commit()
+    flash("Comment updated.")
+    return redirect(url_for("routes.forum"))
+
+@routes.route("/comment/delete/<int:comment_id>")
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.user_id != current_user.id:
+        flash("You can only delete your own comments.")
+        return redirect(url_for("routes.forum"))
+    db.session.delete(comment)
+    db.session.commit()
+    flash("Comment deleted.")
+    return redirect(url_for("routes.forum"))
+
 @routes.route("/feedback", methods=["GET", "POST"])
 @login_required
 def feedback():
