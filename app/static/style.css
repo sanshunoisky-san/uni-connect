@@ -92,3 +92,38 @@ nav a:hover {
     text-decoration: underline;
 }
 
+.comment-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.comment-list li {
+    background-color: #f1f1f1;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.comment-form {
+    margin-top: 10px;
+}
+
+.comment-form input[type="text"] {
+    width: 80%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-form button {
+    padding: 6px 10px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #27ae60;
+}

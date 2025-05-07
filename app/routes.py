@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import db, User, Appointment, Therapist
+from .models import db, User, Appointment, Therapist, ForumPost, Comment
 from .utils import Observer
 
 routes = Blueprint('routes', __name__)
@@ -130,3 +130,18 @@ def my_appointments():
         return redirect(url_for("routes.index"))
     appointments = Appointment.query.filter_by(user_id=current_user.id).all()
     return render_template("my_appointments.html", appointments=appointments)
+
+@routes.route("/forum", methods=["GET"])
+@login_required
+def forum():
+    posts = ForumPost.query.all()
+    return render_template("forum.html", posts=posts)
+
+@routes.route("/comment/<int:post_id>", methods=["POST"])
+@login_required
+def comment(post_id):
+    comment_text = request.form["comment"]
+    comment = Comment(post_id=post_id, user_id=current_user.id, text=comment_text)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for("routes.forum"))

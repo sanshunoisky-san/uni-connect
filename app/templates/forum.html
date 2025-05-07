@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welfare Forum</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="margin-top: 20px;">
+        <a href="/" style="text-decoration:none; color:#2980b9; font-weight:bold;">← Back to Home</a>
+    </div>
+    <div style="text-align:right; margin: 10px;">
+        <a href="{{ url_for('routes.logout') }}" style="text-decoration:none; color:#e74c3c; font-weight:bold;">Logout</a>
+    </div>
+    <div class="container">
+        <h1>University Welfare Forum</h1>
+        {% for post in posts %}
+            <div class="forum-post">
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+
+                <h4>Comments:</h4>
+                <ul class="comment-list">
+                    {% for comment in post.comments %}
+                        <li>
+                            {{ comment.text }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+
+                <form action="/comment/{{ post.id }}" method="post" class="comment-form">
+                    <input type="text" name="comment" placeholder="Add a comment" required>
+                    <button type="submit">Post Comment</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

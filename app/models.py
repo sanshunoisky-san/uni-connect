@@ -38,3 +38,17 @@ class Appointment(db.Model):
 
     therapist = db.relationship('Therapist', backref='appointments')
     user = db.relationship('User', backref='appointments')
+
+class ForumPost(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('forum_post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+
+    post = db.relationship('ForumPost', backref='comments')
+    user = db.relationship('User', backref='comments')
