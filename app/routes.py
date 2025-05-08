@@ -32,7 +32,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         role = request.form["role"]
-        if role not in ["student", "therapist"]:
+        if role not in ["student", "therapist", "admin"]:
             flash("Invalid role.")
             return redirect(url_for("routes.register"))
         if User.query.filter_by(username=username).first():
@@ -182,3 +182,12 @@ def feedback():
         db.session.commit()
         return render_template("status.html", message="Feedback submitted successfully.")
     return render_template("feedback.html")
+
+@routes.route("/feedbacks/view")
+@login_required
+def view_feedbacks():
+    if current_user.role != "admin":
+        flash("Access denied.")
+        return redirect(url_for("routes.index"))
+    feedbacks = Feedback.query.order_by(Feedback.timestamp.desc()).all()
+    return render_template("view_feedbacks.html", feedbacks=feedbacks)

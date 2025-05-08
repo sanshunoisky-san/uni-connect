@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Feedbacks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="text-align:right; margin: 10px;">
+        <a href="{{ url_for('routes.logout') }}" style="text-decoration:none; color:#e74c3c; font-weight:bold;">Logout</a>
+    </div>
+
+    <div class="container">
+        <h1>All Feedback Submissions</h1>
+        {% if feedbacks %}
+            <ul class="comment-list">
+                {% for fb in feedbacks %}
+                    <li>
+                        <strong>Name:</strong> {{ fb.name }}<br>
+                        <strong>Message:</strong> {{ fb.message }}<br>
+                        <small><em>Submitted on {{ fb.timestamp.strftime('%Y-%m-%d %H:%M') }}</em></small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No feedbacks submitted yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

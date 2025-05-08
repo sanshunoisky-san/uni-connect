@@ -23,6 +23,10 @@ if __name__ == '__main__':
         student_user.set_password("student123")
         db.session.add(student_user)
 
+        admin = User(username="admin", role="admin")
+        admin.set_password("admin123")
+        db.session.add(admin)
+
         post1 = ForumPost(
             title="Welcome to the Welfare Forum",
             content="We're excited to introduce weekly mental wellness sessions!"

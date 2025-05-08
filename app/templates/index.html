@@ -19,6 +19,8 @@
                     <li><a href="/forum">Discussion Forum</a></li>
                 {% elif current_user.role == "therapist" %}
                     <li><a href="/appointments/manage">Manage Appointments</a></li>
+                {% elif current_user.role == "admin" %}
+                    <li><a href="/feedbacks/view">View Feedbacks</a></li>
                 {% endif %}
             </ul>
         </nav>
