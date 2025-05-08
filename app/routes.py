@@ -6,6 +6,7 @@ from .utils import Observer
 routes = Blueprint('routes', __name__)
 notifier = Observer()
 
+""" login route """
 @routes.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -19,6 +20,7 @@ def login():
         flash("Invalid credentials.")
     return render_template("login.html")
 
+""" logout route """
 @routes.route("/logout")
 @login_required
 def logout():
@@ -26,6 +28,7 @@ def logout():
     flash("Logged out.")
     return redirect(url_for("routes.login"))
 
+""" register route """
 @routes.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -50,11 +53,13 @@ def register():
         return redirect(url_for("routes.login"))
     return render_template("register.html")
 
+""" landing page """
 @routes.route("/")
 @login_required
 def index():
     return render_template("index.html")
 
+""" checks the role and displays the respective appointments """
 @routes.route("/appointments")
 @login_required
 def show_appointments():
@@ -66,6 +71,7 @@ def show_appointments():
         return render_template("status.html", message="No therapists are available at the moment.")
     return render_template("appointments.html", therapists=therapists)
 
+""" checks the roles, creates an appointment with associations """
 @routes.route("/book", methods=["POST"])
 @login_required
 def book_appointment():
@@ -91,6 +97,7 @@ def book_appointment():
     notifier.notify(appointment)
     return render_template("status.html", message="Appointment requested and pending approval.")
 
+""" update the appointment and commit to db """
 @routes.route("/appointments/update/<int:appointment_id>/<action>")
 @login_required
 def update_appointment_status(appointment_id, action):
@@ -109,6 +116,7 @@ def update_appointment_status(appointment_id, action):
     notifier.notify(appointment)
     return redirect(url_for("routes.manage_appointments"))
 
+""" manage the appointments by checking roles """
 @routes.route("/appointments/manage")
 @login_required
 def manage_appointments():
@@ -122,6 +130,7 @@ def manage_appointments():
     appointments = Appointment.query.filter_by(therapist_id=therapist.id).all()
     return render_template("manage_appointments.html", appointments=appointments)
 
+""" check roles and display appointment """
 @routes.route("/my-appointments")
 @login_required
 def my_appointments():
@@ -131,12 +140,14 @@ def my_appointments():
     appointments = Appointment.query.filter_by(user_id=current_user.id).all()
     return render_template("my_appointments.html", appointments=appointments)
 
+""" display the forum """
 @routes.route("/forum", methods=["GET"])
 @login_required
 def forum():
     posts = ForumPost.query.all()
     return render_template("forum.html", posts=posts)
 
+""" create and add comment """
 @routes.route("/comment/<int:post_id>", methods=["POST"])
 @login_required
 def comment(post_id):
@@ -146,6 +157,7 @@ def comment(post_id):
     db.session.commit()
     return redirect(url_for("routes.forum"))
 
+""" updates the comment by checking the roles """
 @routes.route("/comment/update/<int:comment_id>", methods=["POST"])
 @login_required
 def update_comment(comment_id):
@@ -159,6 +171,7 @@ def update_comment(comment_id):
     flash("Comment updated.")
     return redirect(url_for("routes.forum"))
 
+""" deletes the comment by checking the roles """
 @routes.route("/comment/delete/<int:comment_id>")
 @login_required
 def delete_comment(comment_id):
@@ -171,6 +184,7 @@ def delete_comment(comment_id):
     flash("Comment deleted.")
     return redirect(url_for("routes.forum"))
 
+""" post feedback """
 @routes.route("/feedback", methods=["GET", "POST"])
 @login_required
 def feedback():
@@ -183,6 +197,7 @@ def feedback():
         return render_template("status.html", message="Feedback submitted successfully.")
     return render_template("feedback.html")
 
+""" view feedbacks based on role """
 @routes.route("/feedbacks/view")
 @login_required
 def view_feedbacks():

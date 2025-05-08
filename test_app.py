@@ -27,7 +27,7 @@ class UniSupportTestCase(unittest.TestCase):
     def login(self, username, password):
         return self.app.post("/login", data=dict(username=username, password=password), follow_redirects=True)
 
-    # --- APPOINTMENTS ---
+    """ appointments """
 
     def test_book_appointment_positive(self):
         self.login("student1", "pass")
@@ -40,7 +40,7 @@ class UniSupportTestCase(unittest.TestCase):
         response = self.app.post("/book", data={"therapist": 1, "slot": "10:00"}, follow_redirects=True)
         self.assertIn(b"already booked", response.data)
 
-    # --- FEEDBACK ---
+    """ feedback """
 
     def test_feedback_positive(self):
         self.login("student1", "pass")
@@ -50,9 +50,9 @@ class UniSupportTestCase(unittest.TestCase):
     def test_feedback_negative_empty(self):
         self.login("student1", "pass")
         response = self.app.post("/feedback", data={"name": "", "message": ""}, follow_redirects=True)
-        self.assertIn(b"Feedback submitted", response.data)  # This test expects no validation — adapt if added
+        self.assertIn(b"Feedback submitted", response.data)
 
-    # --- FORUM COMMENTS ---
+    """ forum comments """
 
     def test_forum_comment_positive(self):
         with app.app_context():

@@ -5,6 +5,7 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+""" user inheriting the UserMixin class """
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -20,6 +21,7 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+""" Therapist class """
 class Therapist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -28,6 +30,7 @@ class Therapist(db.Model):
     def _repr_(self):
         return f"<Therapist {self.name}>"
 
+""" Appointment class with association """
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     therapist_id = db.Column(db.Integer, db.ForeignKey('therapist.id'), nullable=False)
@@ -39,11 +42,13 @@ class Appointment(db.Model):
     therapist = db.relationship('Therapist', backref='appointments')
     user = db.relationship('User', backref='appointments')
 
+""" ForumPost class """
 class ForumPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
 
+""" Comment class with association """
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('forum_post.id'), nullable=False)
@@ -53,6 +58,7 @@ class Comment(db.Model):
     post = db.relationship('ForumPost', backref='comments')
     user = db.relationship('User', backref='comments')
 
+""" Feedback class """
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), default='Anonymous')

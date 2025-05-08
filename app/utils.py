@@ -1,3 +1,4 @@
+""" Observer design pattern """
 class Observer:
     def notify(self, appointment):
         print(f"Notification: Appointment for user_id={appointment.user_id} "

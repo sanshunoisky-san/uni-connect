@@ -17,7 +17,8 @@ UniSupport - A Mental Health Support System (Prototype)
     - conda install -c conda-forge flask-sqlalchemy
     - conda install -c conda-forge flask-login
 
-    run seed.py to populate the db and start the project by running the run.py file
+    run seed.py to populate the db 
+    start the project by running the run.py file
     
     TEST CASES:
     run test_app.py main to see the positive and negative test cases
